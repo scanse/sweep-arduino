@@ -11,6 +11,9 @@ Sweep::~Sweep()
 
 bool Sweep::startScanning()
 {
+    if (bIsScanning)
+        return false;
+
     _writeCommand(_DATA_ACQUISITION_START);
     // wait for the receipt (possible timeout)
     if (_readResponseHeader())
@@ -65,6 +68,9 @@ bool Sweep::getReading(ScanPacket &reading)
 
 int32_t Sweep::getMotorSpeed()
 {
+    if (bIsScanning)
+        return false;
+
     _writeCommand(_MOTOR_INFORMATION);
     if (_readResponseInfoSetting())
     {
@@ -77,6 +83,9 @@ int32_t Sweep::getMotorSpeed()
 
 bool Sweep::setMotorSpeed(const uint8_t motorSpeedCode[2])
 {
+    if (bIsScanning)
+        return false;
+
     _writeCommandWithArgument(_MOTOR_SPEED_ADJUST, motorSpeedCode);
     // wait for the receipt (possible timeout)
     if (_readResponseParam())
@@ -89,6 +98,9 @@ bool Sweep::setMotorSpeed(const uint8_t motorSpeedCode[2])
 
 int32_t Sweep::getSampleRate()
 {
+    if (bIsScanning)
+        return false;
+
     _writeCommand(_SAMPLE_RATE_INFORMATION);
     if (_readResponseInfoSetting())
     {
@@ -111,6 +123,9 @@ int32_t Sweep::getSampleRate()
 
 bool Sweep::setSampleRate(const uint8_t sampleRateCode[2])
 {
+    if (bIsScanning)
+        return false;
+
     _writeCommandWithArgument(_SAMPLE_RATE_ADJUST, sampleRateCode);
     // wait for the receipt (possible timeout)
     if (_readResponseParam())
