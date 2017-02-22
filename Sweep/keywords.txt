@@ -1,0 +1,39 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+Sweep	KEYWORD1
+ScanPacket	ScanPacket
+
+#######################################
+# Methods and functions (KEYWORD2)
+#######################################
+bIsScanning	KEYWORD2
+startScanning	KEYWORD2
+stopScanning	KEYWORD2
+getReading	KEYWORD2
+getMotorSpeed	KEYWORD2
+setMotorSpeed	KEYWORD2
+getSampleRate	KEYWORD2
+setSampleRate	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+MOTOR_SPEED_CODE_1_HZ	LITERAL1
+MOTOR_SPEED_CODE_2_HZ	LITERAL1
+MOTOR_SPEED_CODE_3_HZ	LITERAL1
+MOTOR_SPEED_CODE_4_HZ	LITERAL1
+MOTOR_SPEED_CODE_5_HZ	LITERAL1
+MOTOR_SPEED_CODE_6_HZ	LITERAL1
+MOTOR_SPEED_CODE_7_HZ	LITERAL1
+MOTOR_SPEED_CODE_8_HZ	LITERAL1
+MOTOR_SPEED_CODE_9_HZ	LITERAL1
+MOTOR_SPEED_CODE_10_HZ	LITERAL1
+
+SAMPLE_RATE_CODE_500_HZ	LITERAL1
+SAMPLE_RATE_CODE_750_HZ	LITERAL1
+SAMPLE_RATE_CODE_1000_HZ	LITERAL1
