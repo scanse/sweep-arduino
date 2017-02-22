@@ -4,14 +4,24 @@
   
   MegaSerialPrinter:
       - Example sketch for using the Scanse Sweep with the Arduino Mega 2560.
-      - Collects at least 3 complete scans, and then prints the sensor readings
+        Collects at least 3 complete scans, and then prints the sensor readings
       - Assumes Sweep sensor is physically connected to Serial #1 (RX1 & TX1)
         - For the sweep's power, ground, RX & TX pins, follow the connector 
           pinouts in the sweep user manual located here: 
           http://scanse.io/downloads
         - Be sure to connect RX_device -> TX_arduino & TX_device -> RX_arduino
-      - If the arduino is running off USB power alone, the quantity and 
-        quality of sensor readings will drop
+      - The sketch WILL work with the arduino running off USB power alone, 
+        however, the quantity and quality of sensor readings will drop. 
+      - The behavior of the sketch can be unreliable with both USB & powerjack
+        powering the arduino. If the sketch doesn't seem to to work with both
+        connected, try following sequence:
+          - upload the sketch
+          - unplug the USB connector
+          - unplug/remove power to the power jack
+          - plug in the USB connector
+          - open the serial terminal from the arduino IDE
+          - plug in the power to the power jack
+          - send "start" over serial
 
   Created by David C. Young, February 21, 2017.
   Released into the public domain.
@@ -127,8 +137,8 @@ bool adjustDeviceSettings()
   // Set the motor speed to 5HZ (codes available from 1->10 HZ)
   bool bSuccess = device.setMotorSpeed(MOTOR_SPEED_CODE_5_HZ);
   Serial.println(bSuccess ? "\nSuccessfully set motor speed." : "\nFailed to set motor speed");
-  
-/*  
+
+  /*  
   // Device will always default to 500HZ scan rate when it is powered on.
   // Snippet below is left for reference.
   // Set the sample rate to 500HZ (codes available for 500, 750 and 1000 HZ)
