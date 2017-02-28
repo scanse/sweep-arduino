@@ -11,6 +11,10 @@ Copy the entire `Sweep/` folder to your `.../Arduino/libraries/` directory.
 
 Checkout the provided `Examples/MegaSerialPrinter/MegaSerialPrinter.ino` for a full example.
 
+![Alt text](wiring_diagrams/MegaSerialPrinter.png?raw=true "Title")
+
+
+
 Include the Sweep library in your sketch:
 ```arduino
 #include <Sweep.h>
