@@ -2,7 +2,10 @@
 Arduino Library for Scanse Sweep LiDAR
 
 # Compatibility
-Currently the library has only been tested with an Arduino Mega.
+### Arduino
+Currently the library has only been tested with an `Arduino Mega 2560`.
+### Sweep Firmware
+Currently the library only supports sweep firmware `v1.0`. Firmware `v1.1` introduced a calibration routine and new commands that change the device's behavior. Firmware `v1.1` is significantly more robust for arduino applications, so support for `v1.1` will be coming soon.
 
 # Installation
 Copy the entire `Sweep/` folder to your `.../Arduino/libraries/` directory.
