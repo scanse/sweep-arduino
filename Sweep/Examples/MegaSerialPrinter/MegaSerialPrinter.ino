@@ -4,26 +4,22 @@
   
   MegaSerialPrinter:
       - Example sketch for using the Scanse Sweep with the Arduino Mega 2560.
-        Collects at least 3 complete scans, and then prints the sensor readings
+        Collects 3 complete scans, and then prints the sensor readings
       - Assumes Sweep sensor is physically connected to Serial #1 (RX1 & TX1)
         - For the sweep's power, ground, RX & TX pins, follow the connector 
           pinouts in the sweep user manual located here: 
           http://scanse.io/downloads
         - Be sure to connect RX_device -> TX_arduino & TX_device -> RX_arduino
-      - The sketch WILL work with the arduino running off USB power alone, 
-        however, the quantity and quality of sensor readings will drop. 
-      - The behavior of the sketch can be unreliable with both USB & powerjack
-        powering the arduino. If the sketch doesn't seem to to work with both
-        connected, try following sequence:
-          - upload the sketch
-          - unplug the USB connector
-          - unplug/remove power to the power jack
-          - plug in the USB connector
-          - open the serial terminal from the arduino IDE
-          - plug in the power to the power jack
-          - send "start" over serial
+      - You should run the sketch off USB power alone! Using both power sources 
+        (USB + power jack) can cause issues. 
+      - Note that running off of USB power is not entirely adequate for the sweep, 
+        so the quantity and qaulity of sensor readings will drop. This is OK for
+        this example , as it is only meant to provide some visual feedback over 
+        the serial monitor.
+      - In your own projects that do not involve the serial monitor, be sure to use
+        dedicated power instead of the USB.
 
-  Created by David C. Young, February 21, 2017.
+  Created by Scanse LLC, February 21, 2017.
   Released into the public domain.
 */
 
@@ -167,8 +163,8 @@ bool verifyCurrentDeviceSettings()
   }
 
   // Report the motor speed and sample rate to the computer terminal
-  Serial.println("\nMotor Speed: " + String(currentMotorSpeed) + " HZ");
-  Serial.println("Sample Rate: " + String(currentSampleRate) + " HZ");
+  Serial.println("\nMotor Speed Setting: " + String(currentMotorSpeed) + " HZ");
+  Serial.println("Sample Rate Setting: " + String(currentSampleRate) + " HZ");
 
   return true;
 }
@@ -177,6 +173,7 @@ bool verifyCurrentDeviceSettings()
 bool beginDataCollectionPhase()
 {
   // Attempt to start scanning
+  Serial.println("\nWaiting for motor speed to stabilize and calibration routine to complete...");
   bool bSuccess = device.startScanning();
   Serial.println(bSuccess ? "\nSuccessfully initiated scanning..." : "\nFailed to start scanning.");
   return bSuccess;

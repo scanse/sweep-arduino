@@ -56,7 +56,7 @@ class Sweep
     // Destructor
     ~Sweep();
 
-    // true if the device is currently scanning
+    // True if the device is currently scanning
     bool bIsScanning;
 
     /**
@@ -65,14 +65,14 @@ class Sweep
     *   stream. This data stream continues indefinitely until
     *   "stopScanning()" is called.
     *
-    *   @return True is start was successful, false otherwise.
+    *   @return True if start was successful
     */
     bool startScanning();
 
     /**
     *   Terminates an active data stream.
     *
-    *   @return True is stop was successful, false otherwise.
+    *   @return True if stop was successful
     */
     bool stopScanning();
 
@@ -85,6 +85,23 @@ class Sweep
     *   @return True if the read was successful.
     */
     bool getReading(ScanPacket &reading);
+
+    /**
+    *   Check if the device is ready. A device is ready if the
+    *   calibration routine is complete and the motor speed has 
+    *   stabilized to the current speed setting.
+    *
+    *   @return True if the device is ready
+    */
+    bool getMotorReady();
+
+    /**
+    *   Waits (blocks) until the device is ready, or the wait 
+    *   times out after 8 seconds. See getMotorReady for details.
+    *
+    *   @return True if motor is ready, false if the wait timed out
+    */
+    bool waitUntilMotorReady();
 
     // Returns the current motor speed setting in HZ
     int32_t getMotorSpeed();
@@ -118,6 +135,7 @@ class Sweep
     const uint8_t _COMMAND_TERMINATION = '\n';
     const uint8_t _DATA_ACQUISITION_START[2] = {'D', 'S'};
     const uint8_t _DATA_ACQUISITION_STOP[2] = {'D', 'X'};
+    const uint8_t _MOTOR_READY[2] = {'M', 'Z'};
     const uint8_t _MOTOR_SPEED_ADJUST[2] = {'M', 'S'};
     const uint8_t _MOTOR_INFORMATION[2] = {'M', 'I'};
     const uint8_t _SAMPLE_RATE_ADJUST[2] = {'L', 'R'};

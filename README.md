@@ -5,7 +5,7 @@ Arduino Library for Scanse Sweep LiDAR
 ### Arduino
 Currently the library has only been tested with an `Arduino Mega 2560`.
 ### Sweep Firmware
-Currently the library only supports sweep firmware `v1.0`. Firmware `v1.1` introduced a calibration routine and new commands that change the device's behavior. Firmware `v1.1` is significantly more robust for arduino applications, so support for `v1.1` will be coming soon.
+Currently the library only supports Sweep firmware `v1.1`, available [here](http://scanse.io/downloads). Earlier verisons (<=`v1.0`) did not support the communication protocol used by the latest firmware (`v1.1`) and will not work properly with this library.
 
 # Installation
 Copy the entire `Sweep/` folder to your `.../Arduino/libraries/` directory.
@@ -98,15 +98,17 @@ True if the device is currently scanning.
 ```c++
 bool startScanning()
 ```
-Signals the sweep device to start scanning. Initiates an indefinite stream of individual sensor readings until `stopScanning()` is called. 
+Blocks until the sweep device is ready, then signals the device to start scanning. Initiates an indefinite stream of individual sensor readings until `stopScanning()` is called. 
 During an active data stream, any attempt to communicate with the device other than `stopScanning()` will fail.
+
+To avoid blocking, you can use the `getMotorReady()` command to query the current state of the device , and do work in the meantime if it isn't ready.
 
 
 ```c++
 bool stopScanning()
 ```
 
-Signals the sweep device to stop scanning.
+Signals the sweep device to stop scanning. Will block for ~500ms to flush leftover data stream from the buffer and validate a second response from the sensor.
 
 ```c++
 bool getReading(ScanPacket &reading)
@@ -125,6 +127,19 @@ struct ScanPacket
 ```
 
 Structure representing a single sensor reading (ranging). ie: a full 360deg scan would be composed of many such readings.
+
+```c++
+bool getMotorReady()
+```
+
+Returns true if the device is ready. A device is ready when the motor speed has stabilized to the current setting and the calibration routine is complete. If a device was just powered on, or the motor speed was just changed, it can take up to 6 seconds for the device to get ready. For visual confirmation, the blue LED on the face of the sweep will blink until the device is ready.
+
+```c++
+bool waitUntilMotorReady()
+```
+
+Blocks until the device is ready. Returns true if the device is ready, and false if the check timed out (max 8 seconds).
+
 
 ```c++
 int32_t getMotorSpeed()
@@ -148,7 +163,9 @@ MOTOR_SPEED_CODE_9_HZ
 MOTOR_SPEED_CODE_10_HZ
 ```
 
-Adjusts the motor speed setting to the provided code. Recommend users pass one of the const codes defined by library:
+Blocks until the device is ready, then adjusts the motor speed setting to the provided code. Recommend users pass one of the const codes defined by library.
+
+To avoid blocking, you can use the `getMotorReady()` command to query the current state of the device , and do work in the meantime if it isn't ready.
 
 ```c++
 int32_t getSampleRate()
@@ -165,4 +182,4 @@ SAMPLE_RATE_CODE_750_HZ
 SAMPLE_RATE_CODE_1000_HZ
 ```
 
-Adjusts the sample rate setting to the provided code. Recommend users pass one of the const codes defined by library:
+Adjusts the sample rate setting to the provided code. Recommend users pass one of the const codes defined by library.

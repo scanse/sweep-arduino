@@ -14,6 +14,10 @@ bool Sweep::startScanning()
     if (bIsScanning)
         return false;
 
+    // wait until the device is ready (calibration complete + motor stabilized)
+    if (!waitUntilMotorReady())
+        return false;
+
     _writeCommand(_DATA_ACQUISITION_START);
     // wait for the receipt (possible timeout)
     if (_readResponseHeader())
@@ -66,6 +70,35 @@ bool Sweep::getReading(ScanPacket &reading)
     return false;
 }
 
+bool Sweep::getMotorReady()
+{
+    if (bIsScanning)
+        return false;
+    _writeCommand(_MOTOR_READY);
+    if (_readResponseInfoSetting())
+    {
+        // TODO: validate receipt (hold off until performance hit is determined)
+        const uint8_t readyCode[2] = {_responseInfoSetting[2], _responseInfoSetting[3]};
+        // readyCode == 0 indicates device is ready
+        return _ascii_bytes_to_integer(readyCode) == 0;
+    }
+}
+
+bool Sweep::waitUntilMotorReady()
+{
+    if (bIsScanning)
+        return false;
+    // only check for 8 seconds (16 iterations with 500ms pause)
+    for (uint8_t i = 0; i < 16; ++i)
+    {
+        if (getMotorReady())
+            return true;
+        delay(500);
+    }
+    // timeout after 8 seconds
+    return false;
+}
+
 int32_t Sweep::getMotorSpeed()
 {
     if (bIsScanning)
@@ -84,6 +117,10 @@ int32_t Sweep::getMotorSpeed()
 bool Sweep::setMotorSpeed(const uint8_t motorSpeedCode[2])
 {
     if (bIsScanning)
+        return false;
+
+    // wait until the device is ready (calibration complete + motor stabilized)
+    if (!waitUntilMotorReady())
         return false;
 
     _writeCommandWithArgument(_MOTOR_SPEED_ADJUST, motorSpeedCode);
