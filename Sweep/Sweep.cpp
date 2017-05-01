@@ -88,14 +88,14 @@ bool Sweep::waitUntilMotorReady()
 {
     if (bIsScanning)
         return false;
-    // only check for 8 seconds (16 iterations with 500ms pause)
-    for (uint8_t i = 0; i < 16; ++i)
+    // only check for 10 seconds (20 iterations with 500ms pause)
+    for (uint8_t i = 0; i < 20; ++i)
     {
         if (getMotorReady())
             return true;
         delay(500);
     }
-    // timeout after 8 seconds
+    // timeout after 10 seconds
     return false;
 }
 

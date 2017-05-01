@@ -176,6 +176,8 @@ bool beginDataCollectionPhase()
   Serial.println("\nWaiting for motor speed to stabilize and calibration routine to complete...");
   bool bSuccess = device.startScanning();
   Serial.println(bSuccess ? "\nSuccessfully initiated scanning..." : "\nFailed to start scanning.");
+  if (bSuccess)
+    Serial.println("\nGathering 3 scans...");
   return bSuccess;
 }
 

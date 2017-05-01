@@ -5,7 +5,15 @@ Arduino Library for Scanse Sweep LiDAR
 ### Arduino
 Currently the library has only been tested with an `Arduino Mega 2560`.
 ### Sweep Firmware
-Currently the library only supports Sweep firmware `v1.1`, available [here](http://scanse.io/downloads). Earlier verisons (<=`v1.0`) did not support the communication protocol used by the latest firmware (`v1.1`) and will not work properly with this library.
+| sweep firmware | compatibility |
+| :------------: | :-----------: |
+| > v1.3         | untested      |
+| v1.3           | yes           |
+| v1.2           | yes           |
+| v1.1           | yes           |
+| v1.0           | no            |
+
+The library is designed to support Sweep firmware versions `v1.1` or later. Earlier verisons (<=`v1.0`) did not support the communication protocol used by the latest firmware and will not work properly with this library. You can download the latest firmware [here](http://scanse.io/downloads).
 
 # Installation
 Copy the entire `Sweep/` folder to your `.../Arduino/libraries/` directory.
@@ -132,13 +140,13 @@ Structure representing a single sensor reading (ranging). ie: a full 360deg scan
 bool getMotorReady()
 ```
 
-Returns true if the device is ready. A device is ready when the motor speed has stabilized to the current setting and the calibration routine is complete. If a device was just powered on, or the motor speed was just changed, it can take up to 6 seconds for the device to get ready. For visual confirmation, the blue LED on the face of the sweep will blink until the device is ready.
+Returns true if the device is ready. A device is ready when the motor speed has stabilized to the current setting and the calibration routine is complete. If a device was just powered on, or the motor speed was just changed, it can take up to 9 seconds for the device to get ready. For visual confirmation, the blue LED on the face of the sweep will blink until the device is ready.
 
 ```c++
 bool waitUntilMotorReady()
 ```
 
-Blocks until the device is ready. Returns true if the device is ready, and false if the check timed out (max 8 seconds).
+Blocks until the device is ready. Returns true if the device is ready, and false if the check timed out (max 10 seconds).
 
 
 ```c++
