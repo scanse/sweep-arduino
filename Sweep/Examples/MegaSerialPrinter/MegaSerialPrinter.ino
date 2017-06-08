@@ -10,14 +10,18 @@
           pinouts in the sweep user manual located here: 
           http://scanse.io/downloads
         - Be sure to connect RX_device -> TX_arduino & TX_device -> RX_arduino
-      - You should run the sketch off USB power alone! Using both power sources 
-        (USB + power jack) can cause issues. 
+      - For best results, you should provide dedicated external 5V power to the Sweep
+        rather than using power from the Arduino. Just be sure to connect the ground 
+        from the power source and the arduino. If you are just experimenting, you can
+        run the sweep off the 5V power from the Arduino with the Arduino receiving power
+        over USB. However this has only been tested with an external powered USB hub. 
+        It is possible that using a low power USB port (ex: laptop) to power the 
+        arduino & sweep together will result in unexpected behavior. 
       - Note that running off of USB power is not entirely adequate for the sweep, 
         so the quantity and qaulity of sensor readings will drop. This is OK for
-        this example , as it is only meant to provide some visual feedback over 
+        this example, as it is only meant to provide some visual feedback over 
         the serial monitor.
-      - In your own projects that do not involve the serial monitor, be sure to use
-        dedicated power instead of the USB.
+      - In your own projects, be sure to use dedicated power instead of the USB.
 
   Created by Scanse LLC, February 21, 2017.
   Released into the public domain.
@@ -78,35 +82,38 @@ void loop()
   {
   case STATE_WAIT_FOR_USER_INPUT:
     if (listenForUserInput())
-      currentState++;
+      currentState = STATE_ADJUST_DEVICE_SETTINGS;
     break;
   case STATE_ADJUST_DEVICE_SETTINGS:
-    currentState = adjustDeviceSettings() ? currentState + 1 : STATE_ERROR;
+    currentState = adjustDeviceSettings() ? STATE_VERIFY_CURRENT_DEVICE_SETTINGS : STATE_ERROR;
     break;
   case STATE_VERIFY_CURRENT_DEVICE_SETTINGS:
-    currentState = verifyCurrentDeviceSettings() ? currentState + 1 : STATE_ERROR;
+    currentState = verifyCurrentDeviceSettings() ? STATE_BEGIN_DATA_ACQUISITION : STATE_ERROR;
     break;
   case STATE_BEGIN_DATA_ACQUISITION:
-    currentState = beginDataCollectionPhase() ? currentState + 1 : STATE_ERROR;
+    currentState = beginDataCollectionPhase() ? STATE_GATHER_DATA : STATE_ERROR;
     break;
   case STATE_GATHER_DATA:
     gatherSensorReading();
     if (scanCount > 3)
-      currentState++;
+      currentState = STATE_STOP_DATA_ACQUISITION;
     break;
   case STATE_STOP_DATA_ACQUISITION:
-    currentState = stopDataCollectionPhase() ? currentState + 1 : STATE_ERROR;
+    currentState = stopDataCollectionPhase() ? STATE_REPORT_COLLECTED_DATA : STATE_ERROR;
     break;
   case STATE_REPORT_COLLECTED_DATA:
     printCollectedData();
-    currentState++;
+    currentState = STATE_RESET;
     break;
   case STATE_RESET:
+    Serial.println("\n\nAttempting to reset and run the program again...");
     reset();
-    currentState = 0;
+    currentState = STATE_WAIT_FOR_USER_INPUT;
     break;
   default: // there was some error
-    // DO NOTHING
+    Serial.println("\n\nAn error occured. Attempting to reset and run program again...");
+    reset();
+    currentState = STATE_WAIT_FOR_USER_INPUT;
     break;
   }
 }
@@ -245,6 +252,9 @@ void reset()
 {
   scanCount = 0;
   sampleCount = 0;
+  // reset the sensor
+  device.reset();
+  delay(50);
   Serial.flush();
   userInput = "";
   Serial.println("\n\nWhenever you are ready, type \"start\" to to begin the sequence...");
