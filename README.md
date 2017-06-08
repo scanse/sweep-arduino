@@ -7,20 +7,19 @@ Currently the library has only been tested with an `Arduino Mega 2560`.
 ### Sweep Firmware
 | sweep firmware | compatibility |
 | :------------: | :-----------: |
-| > v1.3         | untested      |
-| v1.3           | yes           |
-| v1.2           | yes           |
-| v1.1           | yes           |
-| v1.0           | no            |
+| > v1.4         | untested      |
+| v1.4           | yes           |
 
-The library is designed to support Sweep firmware versions `v1.1` or later. Earlier verisons (<=`v1.0`) did not support the communication protocol used by the latest firmware and will not work properly with this library. You can download the latest firmware [here](http://scanse.io/downloads).
+The library is designed to support recent Sweep firmware versions. The communication protocol used by the earlier firmwares may not work properly with this library. You can download the latest firmware [here](http://scanse.io/downloads).
 
 # Installation
 Copy the entire `Sweep/` folder to your `.../Arduino/libraries/` directory.
 
 # Use
 
-Checkout the provided `Examples/MegaSerialPrinter/MegaSerialPrinter.ino` for a full example.
+Checkout the provided `Examples/` directory for 2 full examples.
+
+For best results, you should provide dedicated external 5V power to the Sweep rather than using power from the Arduino. Just be sure to connect the ground from the power source and the arduino. If you are just experimenting, you can run the sweep off the 5V power from the Arduino with the Arduino receiving power over USB. However this has only been tested with an external powered USB hub. It is possible that using a low power USB port (ex: laptop) to power the arduino + sweep  will result in unexpected behavior.
 
 ![Alt text](wiring_diagrams/MegaSerialPrinter.png?raw=true "Title")
 
@@ -191,3 +190,13 @@ SAMPLE_RATE_CODE_1000_HZ
 ```
 
 Adjusts the sample rate setting to the provided code. Recommend users pass one of the const codes defined by library.
+
+
+```c++
+void reset()
+```
+
+Resets the device. Attempting to communicate with the device while it is resetting will cause issues. While the device is booting the LED on the device will blink green. The device is capable of communication when the LED turns from green to blue, although the motor may still be adjusting until the blue LED stops blinking as well.
+
+
+
