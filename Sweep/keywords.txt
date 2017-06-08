@@ -21,6 +21,7 @@ getMotorSpeed	KEYWORD2
 setMotorSpeed	KEYWORD2
 getSampleRate	KEYWORD2
 setSampleRate	KEYWORD2
+reset	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

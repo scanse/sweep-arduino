@@ -127,6 +127,14 @@ class Sweep
     */
     bool setSampleRate(const uint8_t sampleRateCode[2]);
 
+    /**
+    *   Resets the device. 
+    *   Warning: attempting to communicate with the device while
+    *           it is resetting will cause issues. Device is ready
+    *           when the LED turns blue.
+    */
+    void reset();
+
   private:
     // The stream object connected to the sweep device.
     Stream &_serial;
@@ -166,8 +174,13 @@ class Sweep
     bool _readResponseInfoSetting();
     void _flushInputBuffer();
 
-    // converts a uint16_t representing a float into an f32
-    inline float _u16_to_f32(uint16_t v) { return ((float)(v >> 4u)) + (v & 15u) / 16.0f; }
+    // Some protocol conversion utilities
+    inline int angle_raw_to_deg(uint16_t v)
+    {
+        // angle is transmitted as fixed point integer with scaling factor of 16
+        return static_cast<int>(v / 16.0f);
+    }
+
     // converts a pair of ascii code (between '00':'10') into an integer
     inline const int32_t _ascii_bytes_to_integer(const uint8_t bytes[2])
     {

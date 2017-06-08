@@ -60,12 +60,11 @@ bool Sweep::getReading(ScanPacket &reading)
     {
         // TODO: validate receipt
         reading.bIsSync = _responseScanPacket[0] % 2 == 1;
-        // convert the angle into a float according sweep protocol (in degrees),
-        // then store that value in a 16 bit unsigned int by converting it to millidegrees
-        reading.angle = _u16_to_f32((_responseScanPacket[2] << 8) + (_responseScanPacket[1]));
+        // convert the angle into a float in degrees
+        reading.angle = angle_raw_to_deg((_responseScanPacket[2] << 8) + (_responseScanPacket[1]));
         reading.distance = (_responseScanPacket[4] << 8) + (_responseScanPacket[3]);
         reading.signalStrength = _responseScanPacket[5];
-        return (reading.distance <= 1) ? false : true;
+        return true;
     }
     return false;
 }
@@ -171,6 +170,11 @@ bool Sweep::setSampleRate(const uint8_t sampleRateCode[2])
         return true;
     }
     return false;
+}
+
+void Sweep::reset()
+{
+    _writeCommand(_RESET_DEVICE);
 }
 
 bool Sweep::_writeCommand(const uint8_t cmd[2])
