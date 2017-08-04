@@ -26,6 +26,7 @@ reset	KEYWORD2
 #######################################
 # Constants (LITERAL1)
 #######################################
+MOTOR_SPEED_CODE_0_HZ	LITERAL1
 MOTOR_SPEED_CODE_1_HZ	LITERAL1
 MOTOR_SPEED_CODE_2_HZ	LITERAL1
 MOTOR_SPEED_CODE_3_HZ	LITERAL1

@@ -60,6 +60,8 @@ bool Sweep::getReading(ScanPacket &reading)
     {
         // TODO: validate receipt
         reading.bIsSync = _responseScanPacket[0] % 2 == 1;
+        reading.rawAngle = _responseScanPacket[2] << 8;
+        reading.rawAngle += _responseScanPacket[1];
         // convert the angle into a float in degrees
         reading.angle = angle_raw_to_deg((_responseScanPacket[2] << 8) + (_responseScanPacket[1]));
         reading.distance = (_responseScanPacket[4] << 8) + (_responseScanPacket[3]);
@@ -80,6 +82,10 @@ bool Sweep::getMotorReady()
         const uint8_t readyCode[2] = {_responseInfoSetting[2], _responseInfoSetting[3]};
         // readyCode == 0 indicates device is ready
         return _ascii_bytes_to_integer(readyCode) == 0;
+    }
+    else
+    {
+      return false;
     }
 }
 
@@ -177,14 +183,14 @@ void Sweep::reset()
     _writeCommand(_RESET_DEVICE);
 }
 
-bool Sweep::_writeCommand(const uint8_t cmd[2])
+void Sweep::_writeCommand(const uint8_t cmd[2])
 {
     const uint8_t command[3] = {cmd[0], cmd[1], _COMMAND_TERMINATION};
 
     _serial.write(command, 3);
 }
 
-bool Sweep::_writeCommandWithArgument(const uint8_t cmd[2], const uint8_t arg[2])
+void Sweep::_writeCommandWithArgument(const uint8_t cmd[2], const uint8_t arg[2])
 {
     const uint8_t command[5] = {cmd[0], cmd[1], arg[0], arg[1], _COMMAND_TERMINATION};
 
