@@ -81,6 +81,7 @@ bool Sweep::getMotorReady()
         // readyCode == 0 indicates device is ready
         return _ascii_bytes_to_integer(readyCode) == 0;
     }
+    return false;
 }
 
 bool Sweep::waitUntilMotorReady()
@@ -177,14 +178,14 @@ void Sweep::reset()
     _writeCommand(_RESET_DEVICE);
 }
 
-bool Sweep::_writeCommand(const uint8_t cmd[2])
+void Sweep::_writeCommand(const uint8_t cmd[2])
 {
     const uint8_t command[3] = {cmd[0], cmd[1], _COMMAND_TERMINATION};
 
     _serial.write(command, 3);
 }
 
-bool Sweep::_writeCommandWithArgument(const uint8_t cmd[2], const uint8_t arg[2])
+void Sweep::_writeCommandWithArgument(const uint8_t cmd[2], const uint8_t arg[2])
 {
     const uint8_t command[5] = {cmd[0], cmd[1], arg[0], arg[1], _COMMAND_TERMINATION};
 

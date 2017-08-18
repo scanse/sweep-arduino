@@ -12,6 +12,7 @@
 #define sweepArrLen(x) (sizeof(x) / sizeof(*x))
 
 // Available Motor Speed Codes for the setMotorSpeed method
+const uint8_t MOTOR_SPEED_CODE_0_HZ[2] = {'0', '0'};
 const uint8_t MOTOR_SPEED_CODE_1_HZ[2] = {'0', '1'};
 const uint8_t MOTOR_SPEED_CODE_2_HZ[2] = {'0', '2'};
 const uint8_t MOTOR_SPEED_CODE_3_HZ[2] = {'0', '3'};
@@ -161,9 +162,9 @@ class Sweep
     uint8_t _responseInfoSetting[5];
 
     // Write command without any argument
-    bool _writeCommand(const uint8_t cmd[2]);
+    void _writeCommand(const uint8_t cmd[2]);
     // Write command with a 2 character argument code
-    bool _writeCommandWithArgument(const uint8_t cmd[2], const uint8_t arg[2]);
+    void _writeCommandWithArgument(const uint8_t cmd[2], const uint8_t arg[2]);
 
     // Read various types of responses
     bool _readResponseHeader();
