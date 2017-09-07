@@ -31,8 +31,6 @@
 
 // Create a Sweep device using Serial #1 (RX1 & TX1)
 Sweep device(Serial1);
-// Scan packet struct, used to store info for a single reading
-ScanPacket reading;
 
 // keeps track of how many scans have been collected
 uint8_t scanCount = 0;
@@ -193,10 +191,12 @@ void gatherSensorReading()
 {
   // attempt to get the next scan packet
   // Note: getReading() will write values into the "reading" variable
-  if (device.getReading(reading))
+  bool success = false;
+  ScanPacket reading = device.getReading(success);
+  if (success)
   {
     // check if this reading was the very first reading of a new 360 degree scan
-    if (reading.bIsSync)
+    if (reading.isSync())
       scanCount++;
 
     // don't collect more than 3 scans
@@ -204,10 +204,10 @@ void gatherSensorReading()
       return;
 
     // store the info for this sample
-    syncValues[sampleCount] = reading.bIsSync;
-    angles[sampleCount] = reading.angle;
-    distances[sampleCount] = reading.distance;
-    signalStrengths[sampleCount] = reading.signalStrength;
+    syncValues[sampleCount] = reading.isSync();
+    angles[sampleCount] = reading.getAngleDegrees();
+    distances[sampleCount] = reading.getDistance();
+    signalStrengths[sampleCount] = reading.getSignalStrength();
 
     // increment sample count
     sampleCount++;

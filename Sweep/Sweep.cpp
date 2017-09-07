@@ -1,12 +1,15 @@
 #include "Sweep.h"
 
-Sweep::Sweep(Stream &serial) : _serial(serial)
-{
-    bIsScanning = false;
-}
+Sweep::Sweep(Stream &serial) : _serial(serial), bIsScanning(false) {}
+
 Sweep::~Sweep()
 {
     _serial.flush();
+}
+
+bool Sweep::isScanning()
+{
+    return bIsScanning;
 }
 
 bool Sweep::startScanning()
@@ -50,23 +53,40 @@ bool Sweep::stopScanning()
     return false;
 }
 
-bool Sweep::getReading(ScanPacket &reading)
+ScanPacket Sweep::getReading(bool &success)
 {
+    success = false;
     if (!bIsScanning)
-        return false;
+    {
+        return ScanPacket(false, 0, 0, 0);
+    }
 
-    // wait for the receipt (possible timeout)
+	// wait for the receipt (possible timeout)
     if (_readResponseScanPacket())
     {
         // TODO: validate receipt
-        reading.bIsSync = _responseScanPacket[0] % 2 == 1;
-        // convert the angle into a float in degrees
-        reading.angle = angle_raw_to_deg((_responseScanPacket[2] << 8) + (_responseScanPacket[1]));
-        reading.distance = (_responseScanPacket[4] << 8) + (_responseScanPacket[3]);
-        reading.signalStrength = _responseScanPacket[5];
-        return true;
+        uint8_t i = 0;
+
+        bool bIsSync = _responseScanPacket[i++] & _SYNC_MASK;
+
+        // read raw fixed point azimuth value
+        uint16_t rawAngle_lsb = _responseScanPacket[i++];
+        uint16_t rawAngle_msb = _responseScanPacket[i++] << 8;
+        uint16_t rawAngle = rawAngle_lsb + rawAngle_msb;
+
+        // read distance value
+        uint16_t distance_lsb = _responseScanPacket[i++];
+        uint16_t distance_msb = _responseScanPacket[i++] << 8;
+        uint16_t distance = distance_lsb + distance_msb;
+
+        // read signal strength value
+        uint8_t signalStrength = _responseScanPacket[i++];
+
+        success = true;
+        return ScanPacket(bIsSync, rawAngle, distance, signalStrength);
     }
-    return false;
+	
+    return ScanPacket(false, 0, 0, 0);
 }
 
 bool Sweep::getMotorReady()

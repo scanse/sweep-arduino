@@ -7,43 +7,28 @@
 #define _SWEEP_H
 
 #include <Arduino.h>
+#include "ScanPacket.h"
 
 // Returns the num of elements in an array
 #define sweepArrLen(x) (sizeof(x) / sizeof(*x))
 
 // Available Motor Speed Codes for the setMotorSpeed method
-const uint8_t MOTOR_SPEED_CODE_0_HZ[2] = {'0', '0'};
-const uint8_t MOTOR_SPEED_CODE_1_HZ[2] = {'0', '1'};
-const uint8_t MOTOR_SPEED_CODE_2_HZ[2] = {'0', '2'};
-const uint8_t MOTOR_SPEED_CODE_3_HZ[2] = {'0', '3'};
-const uint8_t MOTOR_SPEED_CODE_4_HZ[2] = {'0', '4'};
-const uint8_t MOTOR_SPEED_CODE_5_HZ[2] = {'0', '5'};
-const uint8_t MOTOR_SPEED_CODE_6_HZ[2] = {'0', '6'};
-const uint8_t MOTOR_SPEED_CODE_7_HZ[2] = {'0', '7'};
-const uint8_t MOTOR_SPEED_CODE_8_HZ[2] = {'0', '8'};
-const uint8_t MOTOR_SPEED_CODE_9_HZ[2] = {'0', '9'};
+const uint8_t MOTOR_SPEED_CODE_0_HZ[2]  = {'0', '0'};
+const uint8_t MOTOR_SPEED_CODE_1_HZ[2]  = {'0', '1'};
+const uint8_t MOTOR_SPEED_CODE_2_HZ[2]  = {'0', '2'};
+const uint8_t MOTOR_SPEED_CODE_3_HZ[2]  = {'0', '3'};
+const uint8_t MOTOR_SPEED_CODE_4_HZ[2]  = {'0', '4'};
+const uint8_t MOTOR_SPEED_CODE_5_HZ[2]  = {'0', '5'};
+const uint8_t MOTOR_SPEED_CODE_6_HZ[2]  = {'0', '6'};
+const uint8_t MOTOR_SPEED_CODE_7_HZ[2]  = {'0', '7'};
+const uint8_t MOTOR_SPEED_CODE_8_HZ[2]  = {'0', '8'};
+const uint8_t MOTOR_SPEED_CODE_9_HZ[2]  = {'0', '9'};
 const uint8_t MOTOR_SPEED_CODE_10_HZ[2] = {'1', '0'};
 
 // Available Sample Rate Codes for the setSampleRate method
-const uint8_t SAMPLE_RATE_CODE_500_HZ[2] = {'0', '1'};
-const uint8_t SAMPLE_RATE_CODE_750_HZ[2] = {'0', '2'};
+const uint8_t SAMPLE_RATE_CODE_500_HZ[2]  = {'0', '1'};
+const uint8_t SAMPLE_RATE_CODE_750_HZ[2]  = {'0', '2'};
 const uint8_t SAMPLE_RATE_CODE_1000_HZ[2] = {'0', '3'};
-
-/**
-*   Structure representing a single sensor reading
-*         
-*   bIsSync: Whether or not this reading is the first of a new scan
-*   angle: Azimuth at which the reading was recorded
-*   distance: Range at which the reading was recorded
-*   signalStrength: Strength of the reading (confidence)
-*/
-struct ScanPacket
-{
-    bool bIsSync;           // 1 -> first reading of new scan, 0 otherwise
-    float angle;            // degrees
-    uint16_t distance;      // cm
-    uint8_t signalStrength; // 0:255, higher is better
-};
 
 /**
 *   Class representing a sweep device
@@ -57,9 +42,9 @@ class Sweep
     // Destructor
     ~Sweep();
 
-    // True if the device is currently scanning
-    bool bIsScanning;
-
+    // Returns true if the device is currently scanning
+    bool isScanning();
+	
     /**
     *   Initiates an active data stream that sends scan packets
     *   (each representing a single reading) over the _serial 
@@ -81,11 +66,10 @@ class Sweep
     *   Reads a single sensor reading from the serial buffer.
     *   (must be called frequently to keep up with the data stream)
     *
-    *   @param reading A reference to a ScanPacket where the 
-    *       values for the reading will be placed.
-    *   @return True if the read was successful.
+    *   @param success Whether a reading was successfully retrieved.
+    *   @return The reading as a ScanPacket object.
     */
-    bool getReading(ScanPacket &reading);
+    ScanPacket getReading(bool &success);
 
     /**
     *   Check if the device is ready. A device is ready if the
@@ -139,19 +123,32 @@ class Sweep
   private:
     // The stream object connected to the sweep device.
     Stream &_serial;
+	
+    // True if the device is currently scanning
+    bool bIsScanning;
 
     // Command Prefixes (See Sweep User Manual for CommProtocol)
     const uint8_t _COMMAND_TERMINATION = '\n';
-    const uint8_t _DATA_ACQUISITION_START[2] = {'D', 'S'};
-    const uint8_t _DATA_ACQUISITION_STOP[2] = {'D', 'X'};
-    const uint8_t _MOTOR_READY[2] = {'M', 'Z'};
-    const uint8_t _MOTOR_SPEED_ADJUST[2] = {'M', 'S'};
-    const uint8_t _MOTOR_INFORMATION[2] = {'M', 'I'};
-    const uint8_t _SAMPLE_RATE_ADJUST[2] = {'L', 'R'};
+    const uint8_t _DATA_ACQUISITION_START[2]  = {'D', 'S'};
+    const uint8_t _DATA_ACQUISITION_STOP[2]   = {'D', 'X'};
+    const uint8_t _MOTOR_READY[2]             = {'M', 'Z'};
+    const uint8_t _MOTOR_SPEED_ADJUST[2]      = {'M', 'S'};
+    const uint8_t _MOTOR_INFORMATION[2]       = {'M', 'I'};
+    const uint8_t _SAMPLE_RATE_ADJUST[2]      = {'L', 'R'};
     const uint8_t _SAMPLE_RATE_INFORMATION[2] = {'L', 'I'};
-    const uint8_t _VERSION_INFORMATION[2] = {'I', 'V'};
-    const uint8_t _DEVICE_INFORMATION[2] = {'I', 'D'};
-    const uint8_t _RESET_DEVICE[2] = {'R', 'R'};
+    const uint8_t _VERSION_INFORMATION[2]     = {'I', 'V'};
+    const uint8_t _DEVICE_INFORMATION[2]      = {'I', 'D'};
+    const uint8_t _RESET_DEVICE[2]            = {'R', 'R'};
+
+    // Sync/Error byte bit masks
+    const uint8_t _E6_MASK   = 0x80;
+    const uint8_t _E5_MASK   = 0x40;
+    const uint8_t _E4_MASK   = 0x20;
+    const uint8_t _E3_MASK   = 0x10;
+    const uint8_t _E2_MASK   = 0x08;
+    const uint8_t _E1_MASK   = 0x04;
+    const uint8_t _E0_MASK   = 0x02;
+    const uint8_t _SYNC_MASK = 0x01;
 
     // Arrays to hold responses
     uint8_t _responseHeader[6];
@@ -175,15 +172,8 @@ class Sweep
     bool _readResponseInfoSetting();
     void _flushInputBuffer();
 
-    // Some protocol conversion utilities
-    inline int angle_raw_to_deg(uint16_t v)
-    {
-        // angle is transmitted as fixed point integer with scaling factor of 16
-        return static_cast<int>(v / 16.0f);
-    }
-
     // converts a pair of ascii code (between '00':'10') into an integer
-    inline const int32_t _ascii_bytes_to_integer(const uint8_t bytes[2])
+    inline int32_t _ascii_bytes_to_integer(const uint8_t bytes[2])
     {
         const uint8_t ASCIINumberBlockOffset = 48;
 
