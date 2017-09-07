@@ -4,19 +4,19 @@ Arduino Library for Scanse Sweep LiDAR
 # Compatibility
 ### Arduino
 Currently the library has only been tested with an `Arduino Mega 2560`, an `Arduino Mega ADK`, and an `Arduino Micro`.
+
 ### Sweep Firmware
 | sweep firmware | compatibility |
 | :------------: | :-----------: |
 | > v1.4         | untested      |
 | v1.4           | yes           |
 
-The library is designed to support recent Sweep firmware versions. The communication protocol used by the earlier firmwares may not work properly with this library. You can download the latest firmware [here](http://scanse.io/downloads).
+The library is designed to support the most recent Sweep firmware version. The communication protocol used by earlier firmware versions may not work properly with this library. A guide to updating the Sweep's firmware is available [here](https://support.scanse.io/hc/en-us/articles/224557908-Upgrading-Firmware).
 
 # Installation
 Copy the entire `Sweep/` folder to your `.../Arduino/libraries/` directory.
 
 # Use
-
 Checkout the provided `Examples/` directory for 2 full examples.
 
 For best results, you should provide dedicated external 5V power to the Sweep rather than using power from the Arduino. Just be sure to connect the ground from the power source and the arduino. If you are just experimenting, you can run the sweep off the 5V power from the Arduino with the Arduino receiving power over USB. However, it is possible that using a low power USB port (ex: laptop) to power the arduino + sweep will result in unexpected behavior.
@@ -217,12 +217,6 @@ float getAngleDegrees() const
 Returns the angle of this reading as a float, in degrees.
 
 ```c++
-float getAngleMillidegrees() const
-```
-
-Returns the angle of this reading as a float, in millidegrees.
-
-```c++
 uint16_t getAngleRaw() const
 ```
 
@@ -238,4 +232,13 @@ Returns the distance of this reading, in centimeters.
 uint8_t getSignalStrength() const
 ```
 
-Returns the signal strength of this reading. A low value indicates low strength, and a high value indicates high strength.
+Returns the signal strength of this reading as an integer value between 0 and 255. Signal strength can be thought of as a confidence metric. A low value indicates low strength, and a high value indicates high strength. 
+
+> **Note:** The signal strenth value is affected by light conditions, material properties etc. For more information, see the article on the [Theory of Operation](https://support.scanse.io/hc/en-us/articles/115006333327-Theory-of-Operation).
+
+```c++
+float getNormalizedSignalStrength() const
+```
+
+Returns the signal strength of this reading as a float value normalized between 0 and 1. ie: ints [0:255] map to floats [0.0f:1.0f]. 
+> **Note:** this method only normalizes a raw byte value. It does NOT normalize the signal strength of this reading in the context of the min and max signal strengths from all readings in a scan, as the reading class has no knowledge of a scan.

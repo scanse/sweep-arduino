@@ -172,13 +172,6 @@ class Sweep
     bool _readResponseInfoSetting();
     void _flushInputBuffer();
 
-    // Some protocol conversion utilities
-    inline int angle_raw_to_deg(uint16_t v)
-    {
-        // angle is transmitted as fixed point integer with scaling factor of 16
-        return static_cast<int>(v / 16.0f);
-    }
-
     // converts a pair of ascii code (between '00':'10') into an integer
     inline int32_t _ascii_bytes_to_integer(const uint8_t bytes[2])
     {

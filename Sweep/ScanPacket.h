@@ -19,23 +19,21 @@ class ScanPacket
     // Returns the angle in degrees as a float
     float getAngleDegrees() const;
 
-    // Returns the angle in millidegrees as a float
-    float getAngleMillidegrees() const;
-
     // Returns the angle as a raw fixed point value
     uint16_t getAngleRaw() const;
 
     // Returns the range measurement
     uint16_t getDistance() const;
 
-    // Returns the signal strength
+    // Returns the signal strength as an integer value between 0 and 255
     uint8_t getSignalStrength() const;
+
+    // Returns the signal strength as a float normalized between 0 and 1
+    float getNormalizedSignalStrength() const;
 
   private:
     // Scaling factor of raw angle
-    static constexpr float SCALING_FACTOR = 16.0;
-    // Millidegrees conversion factor
-    static constexpr float MILLIDEGREE_FACTOR = 1000;
+    static constexpr float SCALING_FACTOR = 16.0f;
 
     bool _bIsSync;           // 1 -> first reading of new scan, 0 otherwise
     uint16_t _rawAngle;      // fixed point value: (degrees * 16)

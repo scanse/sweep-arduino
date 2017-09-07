@@ -15,11 +15,6 @@ float ScanPacket::getAngleDegrees() const
     return _rawAngle / SCALING_FACTOR;
 }
 
-float ScanPacket::getAngleMillidegrees() const
-{
-    return (_rawAngle / SCALING_FACTOR) * MILLIDEGREE_FACTOR;
-}
-
 uint16_t ScanPacket::getAngleRaw() const
 {
     return _rawAngle;
@@ -33,4 +28,9 @@ uint16_t ScanPacket::getDistance() const
 uint8_t ScanPacket::getSignalStrength() const
 {
     return _signalStrength;
+}
+
+float ScanPacket::getNormalizedSignalStrength() const
+{
+    return _signalStrength / 255;
 }
