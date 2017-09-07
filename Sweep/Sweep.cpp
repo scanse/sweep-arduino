@@ -65,22 +65,25 @@ ScanPacket Sweep::getReading(bool &success)
     if (_readResponseScanPacket())
     {
         // TODO: validate receipt
-        int i = 0;
+        uint8_t i = 0;
 
         bool bIsSync = _responseScanPacket[i++] & _SYNC_MASK;
 
-        uint16_t angle_lsb = _responseScanPacket[i++];
-        uint16_t angle_msb = _responseScanPacket[i++] << 8;
-        uint16_t angle = angle_lsb + angle_msb;
+        // read raw fixed point azimuth value
+        uint16_t rawAngle_lsb = _responseScanPacket[i++];
+        uint16_t rawAngle_msb = _responseScanPacket[i++] << 8;
+        uint16_t rawAngle = rawAngle_lsb + rawAngle_msb;
 
+        // read distance value
         uint16_t distance_lsb = _responseScanPacket[i++];
         uint16_t distance_msb = _responseScanPacket[i++] << 8;
         uint16_t distance = distance_lsb + distance_msb;
 
+        // read signal strength value
         uint8_t signalStrength = _responseScanPacket[i++];
 
         success = true;
-        return ScanPacket(bIsSync, angle, distance, signalStrength);
+        return ScanPacket(bIsSync, rawAngle, distance, signalStrength);
     }
 	
     return ScanPacket(false, 0, 0, 0);
