@@ -66,8 +66,6 @@ const uint8_t STATE_ERROR = 7;
 
 // Create a Sweep device using Serial #1 (RX1 & TX1)
 Sweep device(Serial1);
-// Scan packet struct, used to store info for a single reading
-ScanPacket reading;
 
 uint16_t closestDistanceInSpecifiedFOV = 4000; // the distance (in cm) of the closest object in the specified angular range
 uint16_t interval = 1000;                      // interval at which to blink onboard LED (milliseconds)
@@ -181,22 +179,24 @@ bool verifyCurrentDeviceSettings()
 bool gatherDistanceInfo()
 {
   // attempt to get the next scan packet
-  // Note: getReading() will write values into the "reading" variable
-  if (device.getReading(reading))
+  // Note: getReading() will return a ScanPacket object
+  bool success = false;
+  ScanPacket reading = device.getReading(success);
+  if (success)
   {
     // marks the end of the angular range, so report true
-    if (reading.bIsSync)
+    if (reading.isSync())
       return true;
 
     // consider a Field of View in the angular range [360-FOV: 0]
-    if (reading.angle > 360 - FOV)
+    if (reading.getAngleDegrees() > 360 - FOV)
     {
       // only consider valid readings (sensor will report distance of 1 for failed readings)
-      if (reading.distance > 1)
+      if (reading.getDistance() > 1)
       {
         // check if this reading is closer than anything seen so far
-        if (reading.distance < closestDistanceInSpecifiedFOV)
-          closestDistanceInSpecifiedFOV = reading.distance;
+        if (reading.getDistance() < closestDistanceInSpecifiedFOV)
+          closestDistanceInSpecifiedFOV = reading.getDistance();
       }
     }
   }
