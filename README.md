@@ -79,7 +79,7 @@ for (int i = 0; i < 10; i++) {
     if(success) {
         bool bFirstOfNewScan = reading.isSync();
         float angle = reading.getAngleDegrees();
-        uint16_t range = reading.getDistance();
+        uint16_t range = reading.getDistanceCentimeters();
         uint8_t confidence = reading.getSignalStrength();
 ...
 
