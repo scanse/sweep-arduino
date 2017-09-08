@@ -20,7 +20,7 @@ uint16_t ScanPacket::getAngleRaw() const
     return _rawAngle;
 }
 
-uint16_t ScanPacket::getDistance() const
+uint16_t ScanPacket::getDistanceCentimeters() const
 {
     return _distance;
 }

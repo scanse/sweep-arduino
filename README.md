@@ -223,7 +223,7 @@ uint16_t getAngleRaw() const
 Returns the angle of this reading as the raw 16-bit fixed point value. The scaling factor of this value is 16; this means that the angle in degrees is obtained by dividing the raw value by 16.
 
 ```c++
-uint16_t getDistance() const
+uint16_t getDistanceCentimeters() const
 ```
 
 Returns the distance of this reading, in centimeters.

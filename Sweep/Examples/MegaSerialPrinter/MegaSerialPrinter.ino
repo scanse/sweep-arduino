@@ -206,7 +206,7 @@ void gatherSensorReading()
     // store the info for this sample
     syncValues[sampleCount] = reading.isSync();
     angles[sampleCount] = reading.getAngleDegrees();
-    distances[sampleCount] = reading.getDistance();
+    distances[sampleCount] = reading.getDistanceCentimeters();
     signalStrengths[sampleCount] = reading.getSignalStrength();
 
     // increment sample count

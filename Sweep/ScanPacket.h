@@ -22,8 +22,8 @@ class ScanPacket
     // Returns the angle as a raw fixed point value
     uint16_t getAngleRaw() const;
 
-    // Returns the range measurement
-    uint16_t getDistance() const;
+    // Returns the range measurement in centimeters
+    uint16_t getDistanceCentimeters() const;
 
     // Returns the signal strength as an integer value between 0 and 255
     uint8_t getSignalStrength() const;

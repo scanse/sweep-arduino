@@ -192,11 +192,12 @@ bool gatherDistanceInfo()
     if (reading.getAngleDegrees() > 360 - FOV)
     {
       // only consider valid readings (sensor will report distance of 1 for failed readings)
-      if (reading.getDistance() > 1)
+      uint16_t dist = reading.getDistanceCentimeters();
+      if (dist > 1)
       {
         // check if this reading is closer than anything seen so far
-        if (reading.getDistance() < closestDistanceInSpecifiedFOV)
-          closestDistanceInSpecifiedFOV = reading.getDistance();
+        if (dist < closestDistanceInSpecifiedFOV)
+          closestDistanceInSpecifiedFOV = dist;
       }
     }
   }
