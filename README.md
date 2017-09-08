@@ -79,7 +79,7 @@ for (int i = 0; i < 10; i++) {
     if(success) {
         bool bFirstOfNewScan = reading.isSync();
         float angle = reading.getAngleDegrees();
-        uint16_t range = reading.getDistance();
+        uint16_t range = reading.getDistanceCentimeters();
         uint8_t confidence = reading.getSignalStrength();
 ...
 
@@ -223,7 +223,7 @@ uint16_t getAngleRaw() const
 Returns the angle of this reading as the raw 16-bit fixed point value. The scaling factor of this value is 16; this means that the angle in degrees is obtained by dividing the raw value by 16.
 
 ```c++
-uint16_t getDistance() const
+uint16_t getDistanceCentimeters() const
 ```
 
 Returns the distance of this reading, in centimeters.

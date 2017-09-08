@@ -26,7 +26,7 @@ reset	KEYWORD2
 isSync	KEYWORD2
 getAngleDegrees	KEYWORD2
 getAngleRaw	KEYWORD2
-getDistance	KEYWORD2
+getDistanceCentimeters	KEYWORD2
 getSignalStrength	KEYWORD2
 
 #######################################
