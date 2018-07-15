@@ -6,12 +6,12 @@
 # Datatypes (KEYWORD1)
 #######################################
 Sweep	KEYWORD1
-ScanPacket	ScanPacket
+ScanPacket	KEYWORD1
 
 #######################################
 # Methods and functions (KEYWORD2)
 #######################################
-isScanning  KEYWORD2
+isScanning	KEYWORD2
 startScanning	KEYWORD2
 stopScanning	KEYWORD2
 getReading	KEYWORD2
